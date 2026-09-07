@@ -1,0 +1,7 @@
+vaderSentiment>=3.3.2
+
+# --- Multilingual extension ---
+langdetect>=1.0.9
+transformers>=4.35.0
+sentencepiece>=0.1.99
+torch>=2.0.0

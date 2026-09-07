@@ -1,0 +1,15 @@
+﻿# Cache and database folders
+cache/
+chroma_db/
+data/
+__pycache__/
+*.pkl
+*.pyc
+*.csv
+*.json
+medquad_raw/
+static/uploads/
+
+# Python env
+venv/
+.env

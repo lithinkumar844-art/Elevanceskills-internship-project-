@@ -1,0 +1,4 @@
+timestamp,user_text,sentiment_label,sentiment_score,intent,bot_response,escalated
+2026-09-07T09:22:49,hi,neutral,0.000,greeting,Hi there! How can I help you today?,False
+2026-09-07T09:23:22,i am now angry,negative,-0.511,general,"That sounds frustrating, and I want to help fix it. Could you share more details?",False
+2026-09-07T09:23:41,tomorrow my exam,neutral,0.000,general,Thanks for reaching out — what can I help you with today?,False

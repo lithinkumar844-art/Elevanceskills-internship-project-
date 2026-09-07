@@ -1,51 +1,55 @@
 """
-config.py — Central configuration for the arXiv CS Expert Chatbot
+config.py — Central configuration for the Dynamic Knowledge Base Chatbot
 """
+
 import os
-from pathlib import Path
+from dotenv import load_dotenv
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
-BASE_DIR       = Path(__file__).parent
-DATA_DIR       = BASE_DIR / "data"
-CACHE_DIR      = BASE_DIR / "cache"
+load_dotenv()
 
-DATA_DIR.mkdir(exist_ok=True)
-CACHE_DIR.mkdir(exist_ok=True)
+# ── LLM ───────────────────────────────────────────────────────────────────────
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+LLM_MODEL      = os.getenv("LLM_MODEL", "gpt-3.5-turbo")
 
-# The Kaggle arXiv JSONL file (user places it here after downloading)
-ARXIV_JSONL    = DATA_DIR / "arxiv-metadata-oai-snapshot.json"
+# ── Embeddings ────────────────────────────────────────────────────────────────
+# Use a local HuggingFace model so no API key is required for embeddings
+EMBEDDING_MODEL = os.getenv(
+    "EMBEDDING_MODEL",
+    "sentence-transformers/all-MiniLM-L6-v2"
+)
 
-# Pre-built sample file (generated if Kaggle file not present)
-SAMPLE_CSV     = DATA_DIR / "cs_papers_sample.csv"
+# ── ChromaDB ─────────────────────────────────────────────────────────────────
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
+COLLECTION_NAME    = os.getenv("COLLECTION_NAME",    "knowledge_base")
 
-# ── Dataset settings ──────────────────────────────────────────────────────────
-# CS sub-categories to include
-CS_CATEGORIES = {
-    "cs.AI":  "Artificial Intelligence",
-    "cs.LG":  "Machine Learning",
-    "cs.CL":  "Computation & Language (NLP)",
-    "cs.CV":  "Computer Vision",
-    "cs.NE":  "Neural & Evolutionary Computing",
-    "cs.IR":  "Information Retrieval",
-    "cs.RO":  "Robotics",
-    "cs.CR":  "Cryptography & Security",
-    "cs.DC":  "Distributed Computing",
-    "cs.DS":  "Data Structures & Algorithms",
-}
+# ── Ingestion ────────────────────────────────────────────────────────────────
+CHUNK_SIZE    = int(os.getenv("CHUNK_SIZE",    "500"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
 
-MAX_PAPERS_FROM_JSONL = 100_000   # how many CS papers to load from full dataset
-SAMPLE_SIZE           = 5_000     # papers in the lightweight built-in sample
+# ── Scheduler ────────────────────────────────────────────────────────────────
+UPDATE_INTERVAL_HOURS = float(os.getenv("UPDATE_INTERVAL_HOURS", "6"))
 
-# ── Retrieval ─────────────────────────────────────────────────────────────────
-TOP_K_BM25    = 20   # BM25 candidates
-TOP_K_TFIDF   = 5    # final TF-IDF re-rank
-MIN_SCORE     = 0.01
+# ── Sources ───────────────────────────────────────────────────────────────────
+# Add your own URLs, RSS feeds, file paths, or API configs here
+WEB_SOURCES: list[str] = [
+    "https://en.wikipedia.org/wiki/Artificial_intelligence",
+    "https://en.wikipedia.org/wiki/Machine_learning",
+]
 
-# ── LLM (Ollama local, optional) ──────────────────────────────────────────────
-OLLAMA_URL    = os.getenv("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_MODEL  = os.getenv("OLLAMA_MODEL", "mistral")
-USE_LLM       = os.getenv("USE_LLM", "false").lower() == "true"
+RSS_FEEDS: list[str] = [
+    "https://feeds.feedburner.com/TechCrunch",           # Tech news
+    "https://rss.arxiv.org/rss/cs.AI",                  # arXiv AI papers
+]
 
-# ── UI ────────────────────────────────────────────────────────────────────────
-APP_TITLE     = "arXiv CS Expert Chatbot"
-APP_ICON      = "🔬"
+FILE_SOURCES: list[str] = [
+    # "./docs/my_document.pdf",
+    # "./docs/notes.txt",
+]
+
+API_SOURCES: list[dict] = [
+    # {
+    #     "url": "https://api.example.com/articles",
+    #     "headers": {"Authorization": "Bearer YOUR_TOKEN"},
+    #     "text_field": "body",    # JSON key that contains the article text
+    # }
+]
